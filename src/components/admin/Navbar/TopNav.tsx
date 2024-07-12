@@ -4,6 +4,7 @@ import Link from "next/link";
 import { icons } from 'lucide-react';
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { SheetClose } from "@/components/ui/sheet";
 
 type Icon = keyof typeof icons;
 
@@ -19,10 +20,11 @@ function Icon({name, color, size}:IconProps) {
 };
 
 type Props = {
-  showLabels?:boolean
+  showLabels?:boolean,
+  closeSheet?:boolean
 }
 
-export default function TopNav({showLabels=false}:Props){
+export default function TopNav({showLabels=false,closeSheet=false}:Props){
   const pathname = usePathname();
   const NavRoutes:{
     id:string,
@@ -50,28 +52,51 @@ export default function TopNav({showLabels=false}:Props){
     }
   ]
 
+  if (closeSheet){
+    return (
+      <>
+      {NavRoutes.map(({id, href, label, icon})=>(
+        <Link
+          key={id}
+          href={href}>
+          <SheetClose  className={
+            cn(
+              "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
+                showLabels && "w-[80%] px-2 gap-4 justify-start",
+                pathname === href && 'text-background bg-foreground hover:text-background'
+              )}>
+            <Icon name={icon}></Icon>
+            <span className={cn("sr-only")}>{label}</span>
+            {showLabels && <span>{label}</span>}
+            </SheetClose>
+          </Link>
+      ))}
+      </>
+    );
+  }
+
   return (
     <>
     {NavRoutes.map(({id, href, label, icon})=>(
-      <Tooltip key={id}>
-        <TooltipTrigger asChild>
-            <Link
-              href={href}
-                className={
-                  cn(
-                    "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
-                    showLabels && "w-[80%] px-2 gap-4 justify-start",
-                    pathname === href && 'text-background bg-foreground hover:text-background'
-                  )}
+        <Tooltip key={id}>
+          <TooltipTrigger asChild>
+              <Link
+                href={href}
+                  className={
+                    cn(
+                      "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
+                      showLabels && "w-[80%] px-2 gap-4 justify-start",
+                      pathname === href && 'text-background bg-foreground hover:text-background'
+                    )}
 
-              >
-                <Icon name={icon}></Icon>
-                <span className={cn("sr-only")}>{label}</span>
-                {showLabels && <span>{label}</span>}
-              </Link>
-        </TooltipTrigger>
-        <TooltipContent side="right">{label}</TooltipContent>
-      </Tooltip>
+                >
+                  <Icon name={icon}></Icon>
+                  <span className={cn("sr-only")}>{label}</span>
+                  {showLabels && <span>{label}</span>}
+                </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">{label}</TooltipContent>
+        </Tooltip>
     ))}
     </>
   );

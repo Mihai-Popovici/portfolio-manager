@@ -1,6 +1,6 @@
 import { PanelLeft } from "lucide-react";
 import TopNav from "./TopNav";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 export default function NavToogle(){
@@ -13,8 +13,10 @@ export default function NavToogle(){
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="sm:max-w-xs">
+        <SheetTitle className="hidden">Admin Navigation</SheetTitle>
+        <SheetDescription className="hidden">Select what page you want to visit</SheetDescription>
         <nav className="grid gap-6 text-lg font-medium">
-          <TopNav showLabels/>
+          <TopNav showLabels closeSheet/>
         </nav>
       </SheetContent>
     </Sheet>
