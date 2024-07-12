@@ -2,8 +2,9 @@ import Breadcrumb from "@/components/admin/Navbar/Breadcrumb";
 import NavToogle from "@/components/admin/Navbar/NavToogle";
 import TopNav from "@/components/admin/Navbar/TopNav";
 import Indicator from "@/components/indicator/Indicator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { UserButton } from "@clerk/nextjs";
+import { ClerkLoading, UserButton } from "@clerk/nextjs";
 
 export default async function RootLayout({
   children,
@@ -17,7 +18,12 @@ export default async function RootLayout({
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           {/* Top Nav */}
-          <UserButton/>
+          <div className="w-7 h-7 flex justify-center items-center">
+            <ClerkLoading>
+              <Skeleton className="w-7 h-7 rounded-full"/>
+            </ClerkLoading>
+            <UserButton/>
+          </div>
           <TopNav/>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -30,6 +36,9 @@ export default async function RootLayout({
             <Breadcrumb/>
             {/* Div for search bar */}
             <div className="sm:hidden flex justify-center items-center ml-auto">
+              <ClerkLoading>
+                <Skeleton className="w-7 h-7 rounded-full"/>
+              </ClerkLoading>
               <UserButton />
             </div>
           </header>

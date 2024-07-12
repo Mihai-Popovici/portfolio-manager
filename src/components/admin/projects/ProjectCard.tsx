@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload } from "lucide-react";
 import Image from "next/image";
 import placeholder from "../../../../public/placeholder.svg";
 
