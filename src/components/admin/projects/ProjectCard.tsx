@@ -19,7 +19,7 @@ export default function ProjectCard(){
           alt="Product image"
           className="aspect-square w-full rounded-md object-cover"
           height="300"
-          src={placeholder}
+          src="https://picsum.photos/id/55/300/300"
           width="300"
         />
       </div>
