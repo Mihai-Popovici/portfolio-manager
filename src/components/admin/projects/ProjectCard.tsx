@@ -1,18 +1,21 @@
+"use client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InferSelectModel } from "drizzle-orm";
 import Image from "next/image";
 import placeholder from "../../../../public/placeholder.svg";
 import {UsersProjects} from "@/db/schema";
-
+import { useRouter } from "next/navigation";
 
 type Props = {
   project: InferSelectModel<typeof UsersProjects>
 }
 
 export default function ProjectCard({project}:Props){
+  const router = useRouter();
   return (
     <Card
-    className="overflow-hidden"
+    className="overflow-hidden cursor-pointer"
+    onClick={()=>{router.push('/admin/projects/'+project.id)}}
   >
     <CardHeader>
       <CardTitle className="line-clamp-1">{project.title}</CardTitle>

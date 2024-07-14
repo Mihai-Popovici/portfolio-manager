@@ -2,14 +2,14 @@ import NewProjectCard from "@/components/admin/projects/NewProjectCard";
 import ProjectCard from "@/components/admin/projects/ProjectCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
+import { UsersProjects } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
+import { desc, eq } from "drizzle-orm";
 
 async function getUserProjects() {
   const user = await currentUser();
   if (!user) throw new Error("User not found");
-  return db.query.UsersProjects.findMany({
-    where: (projects, { eq }) => eq(projects.user_id, user.id),
-  });
+  return db.select().from(UsersProjects).where(eq(UsersProjects.user_id, user.id)).orderBy(desc(UsersProjects.updatedAt));
 }
 
 export default async function Projects(){
