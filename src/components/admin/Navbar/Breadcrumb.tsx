@@ -8,7 +8,7 @@ export default function Breadcrumb(){
 
   const pathname = usePathname();
   const breadcrumb = pathname.slice(1,pathname.split('').length).split('/');
-  console.log(breadcrumb);
+
   return (
     <Br className="hidden md:flex">
       <BreadcrumbList>
