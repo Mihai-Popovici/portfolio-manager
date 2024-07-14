@@ -2,12 +2,8 @@
 import { db } from "@/db";
 import { UsersProjects } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-
-export type NewProjectState = {
-  success:boolean,
-  message:string
-}
 
 export async function newProject(formData:FormData){
   const user = await currentUser()
@@ -25,4 +21,28 @@ export async function newProject(formData:FormData){
   }).returning();
 
   redirect('/admin/projects/'+project[0].id);
+}
+
+export async function updateProject(formData:FormData){
+  const user = await currentUser()
+  if (!user) {
+    throw new Error('Invalid User');
+  }
+
+  let id = formData.get("id") as string | number;
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const content = formData.get("content") as string;
+
+  id = Number(id); 
+
+  console.log(id);
+
+  let project = await db.update(UsersProjects).set({
+    title,
+    description,
+    content
+  }).where(eq(UsersProjects.id, id)).returning();
+
+  redirect('/admin/projects');
 }

@@ -24,22 +24,6 @@ export default async function Projects(){
           ))}
         </div>
       </div>
-      <div className="h-full hidden lg:block">
-        <Card
-          className="overflow-hidden h-full"
-        >
-          <CardHeader>
-            <CardTitle className="line-clamp-1">Project Settings</CardTitle>
-            <CardDescription className="line-clamp-2">
-              Select a project
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-2">
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </>
   );
 }
