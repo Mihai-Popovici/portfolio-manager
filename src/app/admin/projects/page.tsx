@@ -1,20 +1,27 @@
 import NewProjectCard from "@/components/admin/projects/NewProjectCard";
 import ProjectCard from "@/components/admin/projects/ProjectCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { db } from "@/db";
+import { currentUser } from "@clerk/nextjs/server";
 
-export default function Projects(){
+async function getUserProjects() {
+  const user = await currentUser();
+  if (!user) throw new Error("User not found");
+  return db.query.UsersProjects.findMany({
+    where: (projects, { eq }) => eq(projects.user_id, user.id),
+  });
+}
+
+export default async function Projects(){
+  const projects = await getUserProjects();
   return (
     <>
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
           <NewProjectCard/>
-          <ProjectCard/>
-          <ProjectCard/>
-          <ProjectCard/>
-          <ProjectCard/>
-          <ProjectCard/>
-          <ProjectCard/>
-          <ProjectCard/>
+          {projects.map((project)=>(
+            <ProjectCard key={project.id} project={project}/>
+          ))}
         </div>
       </div>
       <div className="h-full hidden lg:block">
