@@ -27,7 +27,6 @@ function imgCompDirective() {
   }
 }
 
-
 export const components = {
   ImgComp: ImgComp
 }
