@@ -1,13 +1,12 @@
-'use client'
+'use client';
 // InitializedMDXEditor.tsx
 import '@mdxeditor/editor/style.css';
-import { useState, type ForwardedRef } from 'react'
+import { useState, type ForwardedRef } from 'react';
 import {
   headingsPlugin,
   listsPlugin,
   quotePlugin,
   thematicBreakPlugin,
-  markdownShortcutPlugin,
   MDXEditor,
   type MDXEditorMethods,
   type MDXEditorProps,
@@ -16,47 +15,154 @@ import {
   BoldItalicUnderlineToggles,
   diffSourcePlugin,
   BlockTypeSelect,
-  ChangeAdmonitionType,
-  ChangeCodeMirrorLanguage,
-  CodeToggle,
-  CreateLink,
   DiffSourceToggleWrapper,
-  InsertAdmonition,
-  InsertCodeBlock,
-  InsertFrontmatter,
-  InsertSandpack,
-  InsertTable,
-  InsertImage,
-  InsertThematicBreak,
-  ListsToggle,
-  ShowSandpackInfo,
-  linkDialogPlugin,
-  setMarkdown$
-} from '@mdxeditor/editor'
+  imagePlugin,
+  DirectiveDescriptor,
+  directivesPlugin,
+  usePublisher,
+  insertDirective$,
+} from '@mdxeditor/editor';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Images } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import ImgComp from '../home/ImgComp';
 
 // Only import this to the next file
 export default function InitializedMDXEditor({
   editorRef,
+  diffMarkdown,
   ...props
-}: { editorRef: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps) {
-  const [content, setContent] = useState(props.markdown)
+}: { editorRef: ForwardedRef<MDXEditorMethods> | null, diffMarkdown:string } & MDXEditorProps) {
+  const [content, setContent] = useState(props.markdown);
+
+  const ImageComparatorDirectiveDescriptor: DirectiveDescriptor = {
+    name: 'imgComp',
+    testNode(node) {
+      return node.name === 'imgComp';
+    },
+    // set some attribute names to have the editor display a property editor popup.
+    attributes: ['First Image', 'Second Image'],
+    // used by the generic editor to determine whether or not to render a nested editor.
+    hasChildren: false,
+    Editor: (props) => {
+      if (props.mdastNode.attributes) {
+        return (
+          <ImgComp img1={props.mdastNode.attributes['img1'] || ''} img2={props.mdastNode.attributes['img2'] || ''}/>
+        );
+      }
+      return null;
+    },
+  };
+
+  const ImageComparatorButton = () => {
+    // grab the insertDirective action (a.k.a. publisher) from the
+    // state management system of the directivesPlugin
+    const [file1, setFile1] = useState<null | File>(null);
+    const [file2, setFile2] = useState<null | File>(null);
+
+    const insertDirective = usePublisher(insertDirective$);
+
+    function handleCancel() {
+      setFile1(null);
+      setFile2(null);
+    }
+
+    function handleAdd() {
+      insertDirective({
+        name: 'imgComp',
+        type: 'leafDirective',
+        attributes: {
+          img1: 'https://picsum.photos/id/237/1920/1080',
+          img2: 'https://picsum.photos/id/238/1920/1080',
+        },
+      });
+      handleCancel();
+    }
+
+    return (
+      <Tooltip delayDuration={0}>
+        <AlertDialog>
+          <TooltipTrigger asChild>
+            <AlertDialogTrigger asChild>
+              <button className="w-7 h-7 hover:bg-[var(--baseBgActive)] flex justify-center items-center rounded-sm">
+                <Images className="w-5 h-5" />
+              </button>
+            </AlertDialogTrigger>
+          </TooltipTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Image Comparator</AlertDialogTitle>
+              <AlertDialogDescription>
+                Add 2 images you want to compare
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <input
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setFile1(e.target.files[0]);
+                }
+              }}
+              type="file"
+              accept="image/jpeg,image/png"
+            />
+            <input
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setFile2(e.target.files[0]);
+                }
+              }}
+              type="file"
+              accept="image/jpeg,image/png"
+            />
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleCancel}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleAdd}>Add</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <TooltipContent className='text-xs bg-[var(--baseText)] text-[var(--baseBase)] border-none'>
+          Add Image Comparator
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
   return (
-    <>
-    <textarea id='content' name='content' value={content} hidden readOnly/>
     <MDXEditor
-    onChange={(markdown)=>setContent(markdown)}
-    className='dark-editor'
       plugins={[
-        // Example Plugin Usage
+        directivesPlugin({
+          directiveDescriptors: [ImageComparatorDirectiveDescriptor],
+        }),
         headingsPlugin(),
         listsPlugin(),
         quotePlugin(),
         thematicBreakPlugin(),
-        markdownShortcutPlugin(),
+        // markdownShortcutPlugin(),
         diffSourcePlugin({
           viewMode: 'rich-text',
-          diffMarkdown:props.markdown,
-          readOnlyDiff: true
+          diffMarkdown: diffMarkdown,
+          readOnlyDiff: true,
+        }),
+        imagePlugin({
+          imageUploadHandler: () => {
+            return Promise.resolve('https://picsum.photos/200/300');
+          },
+          imageAutocompleteSuggestions: [
+            'https://picsum.photos/200/300',
+            'https://picsum.photos/200',
+          ],
         }),
         toolbarPlugin({
           toolbarContents: () => (
@@ -65,15 +171,15 @@ export default function InitializedMDXEditor({
               <DiffSourceToggleWrapper>
                 <UndoRedo />
                 <BoldItalicUnderlineToggles />
-                <BlockTypeSelect/>
+                <BlockTypeSelect />
+                <ImageComparatorButton />
               </DiffSourceToggleWrapper>
             </>
-          )
+          ),
         }),
       ]}
       {...props}
       ref={editorRef}
     />
-    </>
-  )
+  );
 }

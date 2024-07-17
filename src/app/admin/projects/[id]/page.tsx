@@ -1,10 +1,6 @@
-import { ForwardRefEditor } from "@/components/editor/ForwardRefEditor";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { EditProject } from "@/components/admin/projects/EditProject";
 import { db } from "@/db"
 import { UsersProjects } from "@/db/schema"
-import { updateProject } from "@/lib/actions/project.actions";
 import { currentUser } from "@clerk/nextjs/server"
 import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation";
@@ -21,16 +17,7 @@ export default async function Project({ params }: { params: { id: string } }){
     .where(
       eq(UsersProjects.id, id)
     )
-  return(
-    <form action={updateProject} className="flex flex-col gap-4 col-span-3">
-      <input hidden name="id" value={project.id} readOnly></input>
-      <Button type="submit">Save</Button>
-      <Label htmlFor="title">Title</Label>
-      <Input id="title" name="title" defaultValue={project.title}/>
-      <Label htmlFor="description">Description</Label>
-      <Input id="description" name="description" defaultValue={project.description}/>
-      <Label htmlFor="content">Content</Label>
-      <ForwardRefEditor markdown={project.content || ''}/>
-    </form>
+  return (
+    <EditProject project={project}/>
   )
 }
