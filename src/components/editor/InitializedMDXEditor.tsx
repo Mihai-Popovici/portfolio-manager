@@ -77,13 +77,31 @@ export default function InitializedMDXEditor({
       setFile2(null);
     }
 
-    function handleAdd() {
+    async function handleAdd() {
+      if(!file1 || !file2){
+        return;
+      }
+      let formData = new FormData();
+      formData.append("file", file1);
+      const res1 = await fetch('/api/upload', {
+        method:'POST',
+        body: formData
+      })
+      const url1 = await res1.json();
+      formData = new FormData();
+      formData.append("file", file2);
+      const res2 = await fetch('/api/upload', {
+        method:'POST',
+        body: formData
+      })
+      const url2 = await res2.json();
+
       insertDirective({
         name: 'imgComp',
         type: 'leafDirective',
         attributes: {
-          img1: 'https://picsum.photos/id/237/1920/1080',
-          img2: 'https://picsum.photos/id/238/1920/1080',
+          img1: url1,
+          img2: url2,
         },
       });
       handleCancel();
@@ -106,24 +124,24 @@ export default function InitializedMDXEditor({
                 Add 2 images you want to compare
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <input
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  setFile1(e.target.files[0]);
-                }
-              }}
-              type="file"
-              accept="image/jpeg,image/png"
-            />
-            <input
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  setFile2(e.target.files[0]);
-                }
-              }}
-              type="file"
-              accept="image/jpeg,image/png"
-            />
+              <input
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setFile1(e.target.files[0]);
+                  }
+                }}
+                type="file"
+                accept="image/jpeg,image/png"
+              />
+              <input
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setFile2(e.target.files[0]);
+                  }
+                }}
+                type="file"
+                accept="image/jpeg,image/png"
+              />
             <AlertDialogFooter>
               <AlertDialogCancel onClick={handleCancel}>
                 Cancel

@@ -9,6 +9,10 @@ const nextConfig = {
       {
         protocol:"https",
         hostname:"fastly.picsum.photos"
+      },
+      {
+        protocol:"https",
+        hostname:"portfolio-manager.s3.tebi.io"
       }
     ]
   }
