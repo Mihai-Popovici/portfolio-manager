@@ -174,13 +174,16 @@ export default function InitializedMDXEditor({
           readOnlyDiff: true,
         }),
         imagePlugin({
-          imageUploadHandler: () => {
-            return Promise.resolve('https://picsum.photos/200/300');
-          },
-          imageAutocompleteSuggestions: [
-            'https://picsum.photos/200/300',
-            'https://picsum.photos/200',
-          ],
+          imageUploadHandler: async (value) => {
+            let formData = new FormData();
+            formData.append("file", value);
+            const upload = await fetch('/api/upload', {
+              method:'POST',
+              body: formData
+            });
+            const url = await upload.json();
+            return Promise.resolve(url);
+          }
         }),
         toolbarPlugin({
           toolbarContents: () => (
