@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -5,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { newProject } from "@/lib/actions/project.actions";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 
 
 export default function NewProjectCard() {
+  const [creating, setCreating] = useState(false);
   return (
     <Dialog>
-      <DialogTrigger className="w-full h-full">
+      <DialogTrigger className="w-full h-full" onClick={()=>setCreating(false)}>
         <Card
           className="overflow-hidden h-full">
           <CardContent className="h-full py-6">
@@ -22,7 +25,7 @@ export default function NewProjectCard() {
         </Card>
       </DialogTrigger>
       <DialogContent>
-        <form action={newProject} className="w-full h-full">
+        <form action={newProject} onSubmit={()=>setCreating(true)} className="w-full h-full">
           <DialogHeader>
             <DialogTitle>New Project</DialogTitle>
             <DialogDescription>
@@ -54,7 +57,7 @@ export default function NewProjectCard() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Create project</Button>
+            <Button disabled={creating} type="submit">Create project</Button>
           </DialogFooter>
         </form>
       </DialogContent>
