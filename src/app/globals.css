@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("yet-another-react-lightbox/styles.css");
+@import url("yet-another-react-lightbox/plugins/thumbnails.css");
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -120,9 +123,29 @@
     @apply bg-background text-foreground;
   }
   h1 {
-    @apply text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1];
+    @apply relative text-4xl font-bold leading-tight tracking-tighter lg:leading-[1.1] my-3;
+  }
+  h1::after{
+    content: '';
+    @apply z-[-1] absolute left-0 top-1/2 -translate-y-1/2 h-6 w-full from-white to-blue-200 bg-gradient-to-r rounded-full;
+  }
+  h2 {
+    @apply text-3xl font-semibold md:text-xl my-4;
   }
   p {
-    @apply max-w-2xl text-lg font-light text-foreground;
+    @apply text-lg text-foreground;
   }
+  ul {
+    @apply my-4;
+  }
+  li {
+    @apply px-10 text-lg;
+  }
+}
+
+.yarl__container, .yarl__thumbnails_container {
+  @apply bg-black/85;
+}
+.yarl__thumbnails_bottom .yarl__thumbnails_vignette, .yarl__thumbnails_top .yarl__thumbnails_vignette {
+  background: transparent !important;
 }

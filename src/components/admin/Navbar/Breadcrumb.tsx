@@ -14,17 +14,17 @@ export default function Breadcrumb(){
       <BreadcrumbList>
       {Array(breadcrumb.length-1).fill('').map((b,i)=>(
         <React.Fragment key={'b_'+breadcrumb[i]}>
-          <BreadcrumbItem>
+          <BreadcrumbItem className="p-0">
             <BreadcrumbLink asChild>
               <Link className="capitalize" href={'/'+breadcrumb.slice(0,i+1).join('/') || '/'}>{breadcrumb[i] === '' ? 'Home' : breadcrumb[i]}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator/>
+          <BreadcrumbSeparator className="p-0"/>
         </React.Fragment>
       ))}
       {
         breadcrumb[breadcrumb.length-1] && 
-        <BreadcrumbItem key={'b_'+breadcrumb[breadcrumb.length-1]}>
+        <BreadcrumbItem className="p-0" key={'b_'+breadcrumb[breadcrumb.length-1]}>
           <BreadcrumbPage className="capitalize">{breadcrumb[breadcrumb.length-1]}</BreadcrumbPage>
         </BreadcrumbItem>
       }

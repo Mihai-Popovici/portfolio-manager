@@ -30,7 +30,6 @@ export async function updateProject(formData:FormData){
   }
 
   let id = formData.get("id") as string | number;
-  const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
 
@@ -39,7 +38,6 @@ export async function updateProject(formData:FormData){
   console.log(id);
 
   let project = await db.update(UsersProjects).set({
-    title,
     description,
     content
   }).where(eq(UsersProjects.id, id)).returning();

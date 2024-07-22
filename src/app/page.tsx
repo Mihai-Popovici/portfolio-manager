@@ -11,8 +11,10 @@ export default async function Home() {
   const projects = await db.select().from(UsersProjects).orderBy(desc(UsersProjects.updatedAt));
 
   return (
-  <>
-    <RenderProject project={projects[0]}/>
-  </>
+  <div className="p-5 w-full flex justify-center">
+    <div className="w-full max-w-[1200px]">
+      <RenderProject project={projects[0]}/>
+    </div>
+  </div>
   );
 }

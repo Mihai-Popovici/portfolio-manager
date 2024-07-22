@@ -7,11 +7,11 @@ import remarkParse from 'remark-parse';
 import { visit} from 'unist-util-visit';
 import { MDXProvider } from '@mdx-js/react';
 import ImgComp from './ImgComp';
+import ImgGallery from './ImgGallery';
 
 function imgCompDirective() {
   return (tree:any) => {
     visit(tree, 'leafDirective', (node) => {
-      console.log(node);
       if (node.name !== 'imgComp') return;
       console.log(node);
       const data = node.data || (node.data = {});
@@ -27,8 +27,27 @@ function imgCompDirective() {
   }
 }
 
+function imgGalleryDirective() {
+  return (tree:any) => {
+    visit(tree, 'leafDirective', (node) => {
+      if (node.name !== 'imgGallery') return;
+      console.log(node);
+      const data = node.data || (node.data = {});
+      const hast = {
+        type: 'element',
+        tagName: 'ImgGallery',
+        properties: node.attributes,
+        children: [],
+      };
+      data.hName = hast.tagName;
+      data.hProperties = hast.properties;
+    });
+  }
+}
+
 export const components = {
-  ImgComp: ImgComp
+  ImgComp: ImgComp,
+  ImgGallery: ImgGallery
 }
 
 export default function RenderProject({project}:{project:any}){
@@ -40,7 +59,8 @@ export default function RenderProject({project}:{project:any}){
         remarkPlugins:[
           remarkParse,
           remarkDirective,
-          imgCompDirective
+          imgCompDirective,
+          imgGalleryDirective
         ]
       }
     });

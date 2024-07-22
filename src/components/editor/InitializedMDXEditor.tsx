@@ -33,9 +33,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Images } from 'lucide-react';
+import { BookImage, Images } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import ImgComp from '../home/ImgComp';
+import ImgGallery from '../home/ImgGallery';
+import { Photo } from 'react-photo-album';
+import { getMeta } from '@/lib/utils';
+import Image from 'next/image';
 
 // Only import this to the next file
 export default function InitializedMDXEditor({
@@ -58,6 +62,26 @@ export default function InitializedMDXEditor({
       if (props.mdastNode.attributes) {
         return (
           <ImgComp img1={props.mdastNode.attributes['img1'] || ''} img2={props.mdastNode.attributes['img2'] || ''}/>
+        );
+      }
+      return null;
+    },
+  };
+
+  const ImageGalleryDirectiveDescriptor: DirectiveDescriptor = {
+    name: 'imgGallery',
+    testNode(node) {
+      return node.name === 'imgGallery';
+    },
+    // set some attribute names to have the editor display a property editor popup.
+    attributes: ['Photos'],
+    // used by the generic editor to determine whether or not to render a nested editor.
+    hasChildren: false,
+    Editor: (props) => {
+      if (props.mdastNode.attributes && props.mdastNode.attributes['photos']) {
+        const photos:Photo[] = JSON.parse(props.mdastNode.attributes['photos']);
+        return (
+          <ImgGallery photos={photos}/>
         );
       }
       return null;
@@ -157,11 +181,96 @@ export default function InitializedMDXEditor({
     );
   };
 
+  const ImageGalleryButton = () => {
+    const [img, setImg] = useState<null | File>(null);
+    const [uploading, setUploading] = useState(false);
+    const [photos, setPhotos] = useState<Photo[]|[]>([]);
+    const insertDirective = usePublisher(insertDirective$);
+    function handleCancel() {
+      
+    }
+    async function handleAddImg(img:File){
+      setUploading(true);
+      if(!img){
+        return;
+      }
+      let formData = new FormData();
+      formData.append("file", img);
+      const res = await fetch('/api/upload', {
+        method:'POST',
+        body: formData
+      })
+      const url = await res.json();
+      getMeta(url, (err, img) => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        setPhotos((photos:Photo[])=>[...photos, {src:url, width, height}]);
+        setUploading(false);
+      });
+    }
+    function handleAdd() {
+      insertDirective({
+        name: 'imgGallery',
+        type: 'leafDirective',
+        attributes: {
+          photos: JSON.stringify(photos),
+        },
+      });
+      handleCancel();
+    }
+    return (
+      <Tooltip delayDuration={0}>
+        <AlertDialog>
+          <TooltipTrigger asChild>
+            <AlertDialogTrigger asChild>
+              <button className="w-7 h-7 hover:bg-[var(--baseBgActive)] flex justify-center items-center rounded-sm">
+                <BookImage className="w-5 h-5" />
+              </button>
+            </AlertDialogTrigger>
+          </TooltipTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Image Gallery</AlertDialogTitle>
+              <AlertDialogDescription>
+                Add images you want to add to the gallery
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+              <input
+                disabled={uploading}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    handleAddImg(e.target.files[0]);
+                  }
+                }}
+                type="file"
+                accept="image/jpeg,image/png"
+              />
+              <div className='flex flex-wrap gap-2 w-full h-fit'>
+                {photos.map((photo)=>(
+                  // eslint-disable-next-line
+                  <img key={photo.src.split('/').reverse()[0]} width={80} height={80} src={photo.src} alt=''/> 
+                ))}
+              </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleCancel}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction disabled={uploading} onClick={handleAdd}>Add</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <TooltipContent className='text-xs bg-[var(--baseText)] text-[var(--baseBase)] border-none'>
+          Add Image Gallery
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
   return (
     <MDXEditor
       plugins={[
         directivesPlugin({
-          directiveDescriptors: [ImageComparatorDirectiveDescriptor],
+          directiveDescriptors: [ImageComparatorDirectiveDescriptor, ImageGalleryDirectiveDescriptor],
         }),
         headingsPlugin(),
         listsPlugin(),
@@ -194,6 +303,7 @@ export default function InitializedMDXEditor({
                 <BoldItalicUnderlineToggles />
                 <BlockTypeSelect />
                 <ImageComparatorButton />
+                <ImageGalleryButton />
               </DiffSourceToggleWrapper>
             </>
           ),

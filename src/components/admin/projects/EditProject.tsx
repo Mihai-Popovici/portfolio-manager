@@ -1,5 +1,6 @@
 "use client";
 import { ForwardRefEditor } from "@/components/editor/ForwardRefEditor";
+import ImgGallery from "@/components/home/ImgGallery";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +22,6 @@ export function EditProject({project}:Props){
     e.preventDefault();
     const formData = new FormData();
     formData.append('id', ''+project.id);
-    formData.append('title', title);
     formData.append('description', description);
     formData.append('content', content);
     updateProject(formData);
@@ -31,7 +31,7 @@ export function EditProject({project}:Props){
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 col-span-3">
       <Button type="submit">Save</Button>
       <Label htmlFor="title">Title</Label>
-      <Input id="title" name="title" defaultValue={title} onChange={(e)=>setTitle(e.target.value)}/>
+      <p>{title}</p>
       <Label htmlFor="description">Description</Label>
       <Input id="description" name="description" defaultValue={description} onChange={(e)=>setDescription(e.target.value)}/>
       <Label htmlFor="content">Content</Label>
