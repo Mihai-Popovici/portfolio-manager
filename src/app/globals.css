@@ -144,6 +144,9 @@
   table {
     @apply w-full m-5;
   }
+  img {
+
+  }
 }
 
 .yarl__container, .yarl__thumbnails_container {

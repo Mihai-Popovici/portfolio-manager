@@ -4,6 +4,7 @@ import { UsersProjects } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { toSlug } from "@/lib/utils";
 
 export async function newProject(formData:FormData){
   const user = await currentUser()
@@ -17,6 +18,7 @@ export async function newProject(formData:FormData){
   let project = await db.insert(UsersProjects).values({
     user_id: user.id,
     title,
+    slug: toSlug(title),
     description
   }).returning();
 

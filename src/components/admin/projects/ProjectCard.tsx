@@ -12,7 +12,7 @@ type Props = {
 
 export default function ProjectCard({project}:Props){
   return (
-    <form action={()=>redirect('/admin/projects/'+project.id)}>
+    <form action={()=>redirect('/admin/projects/'+project.slug)}>
       <button type="submit" className="text-start">
         <Card
         className="overflow-hidden cursor-pointer"

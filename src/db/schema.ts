@@ -4,6 +4,7 @@ export const UsersProjects = pgTable("users_projects", {
   id: serial('id').primaryKey(),
   user_id: text("user_id").notNull(),
   title: text("title").notNull(),
+  slug: text("slug").default('').notNull(),
   description: text("description").notNull(),
   thumbnailUrl: text("thumbnail_url"),
   content: text("content"),
