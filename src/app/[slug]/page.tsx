@@ -2,9 +2,10 @@
 import { db } from "@/db"
 import { UsersProjects } from "@/db/schema"
 import { eq } from "drizzle-orm"
-import { ArrowLeft } from "lucide-react";
 import { redirect } from "next/navigation";
 import dynamic from "next/dynamic";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const RenderProject = dynamic(() => import('@/components/home/RenderProject'), {
   ssr: false
@@ -16,11 +17,13 @@ export default async function Project({ params }: { params: { slug: string } }){
     redirect('/');
   }
   return (
-  <div className="p-5 w-full flex justify-center">
-    <div className="w-full max-w-[1200px]">
-      <a href="/"><ArrowLeft/></a>
+  <div className="p-5 w-full">
+      <Button>
+        <a href="/" className="flex gap-2 items-center">
+          <ArrowLeft/>Go Back
+        </a>
+      </Button>
       <RenderProject project={project}/>
-    </div>
   </div>
   );
 }

@@ -4,12 +4,12 @@ import { UsersProjects } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { toSlug } from "@/lib/utils";
+import { toSlug, uploadFile } from "@/lib/utils";
 
 async function uniqTitle(title:string){
   let count = 0;
-  let t = title;
-  while ((await db.select().from(UsersProjects).where(eq(UsersProjects.title, t))).length > 0) {
+  let t = title.replace(/\s+/g, ' ');
+  while ((await db.select().from(UsersProjects).where(eq(UsersProjects.slug, toSlug(t)))).length > 0) {
     count += 1;
     t = `${title} ${count}`
   }
@@ -43,7 +43,7 @@ export async function updateProject(formData:FormData){
 
   let id = formData.get("id") as string | number;
   id = Number(id); 
-  let title = formData.get("title") as string;
+  let title = (formData.get("title") as string).replace(/\s+/g, ' ');
   const [p] = await db.select().from(UsersProjects).where(eq(UsersProjects.id, id));
   if (!p) {
     throw new Error('Invalid Project');
@@ -54,14 +54,26 @@ export async function updateProject(formData:FormData){
   // const title = await uniqTitle(formData.get("title") as string);
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
+  const thumbnail = formData.get("thumbnail") as File;
 
+  if (thumbnail){
+    let thumbnailUrl = await uploadFile(thumbnail)
+    await db.update(UsersProjects).set({
+      thumbnailUrl
+    }).where(eq(UsersProjects.id, id)).returning();
+  }
 
-  let project = await db.update(UsersProjects).set({
+  await db.update(UsersProjects).set({
     title,
     slug:toSlug(title),
     description,
     content
   }).where(eq(UsersProjects.id, id)).returning();
 
+  redirect('/admin/projects');
+}
+
+export async function deleteProject(id:number){
+  await db.delete(UsersProjects).where(eq(UsersProjects.id, id));
   redirect('/admin/projects');
 }

@@ -42,7 +42,7 @@ import ImgComp from '../home/ImgComp';
 import ImgGallery from '../home/ImgGallery';
 import { Photo } from 'react-photo-album';
 import { getMeta } from '@/lib/utils';
-import Image from 'next/image';
+import { Input } from '../ui/input';
 
 // Only import this to the next file
 export default function InitializedMDXEditor({
@@ -151,7 +151,7 @@ export default function InitializedMDXEditor({
                 Add 2 images you want to compare
               </AlertDialogDescription>
             </AlertDialogHeader>
-              <input
+              <Input
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
                     setFile1(e.target.files[0]);
@@ -160,7 +160,7 @@ export default function InitializedMDXEditor({
                 type="file"
                 accept="image/jpeg,image/png"
               />
-              <input
+              <Input
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
                     setFile2(e.target.files[0]);
@@ -185,7 +185,6 @@ export default function InitializedMDXEditor({
   };
 
   const ImageGalleryButton = () => {
-    const [img, setImg] = useState<null | File>(null);
     const [uploading, setUploading] = useState(false);
     const [photos, setPhotos] = useState<Photo[]|[]>([]);
     const insertDirective = usePublisher(insertDirective$);
@@ -238,7 +237,7 @@ export default function InitializedMDXEditor({
                 Add images you want to add to the gallery
               </AlertDialogDescription>
             </AlertDialogHeader>
-              <input
+              <Input
                 disabled={uploading}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
