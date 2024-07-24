@@ -14,7 +14,7 @@ export function getMeta(url: string, cb:(err:any,img?:any)=>void) {
 
 export function findBestHref(hrefs:string[], pathname:string) {
   if (!hrefs || hrefs.length < 1 || !pathname || pathname === ""){
-    return "Error"
+    return ""
   }
   let bestMatch = {
     length: -1,
