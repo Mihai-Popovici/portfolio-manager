@@ -21,6 +21,9 @@ import {
   directivesPlugin,
   usePublisher,
   insertDirective$,
+  markdownShortcutPlugin,
+  InsertTable,
+  tablePlugin,
 } from '@mdxeditor/editor';
 import {
   AlertDialog,
@@ -276,7 +279,8 @@ export default function InitializedMDXEditor({
         listsPlugin(),
         quotePlugin(),
         thematicBreakPlugin(),
-        // markdownShortcutPlugin(),
+        markdownShortcutPlugin(),
+        tablePlugin(),
         diffSourcePlugin({
           viewMode: 'rich-text',
           diffMarkdown: diffMarkdown,
@@ -304,6 +308,7 @@ export default function InitializedMDXEditor({
                 <BlockTypeSelect />
                 <ImageComparatorButton />
                 <ImageGalleryButton />
+                <InsertTable/>
               </DiffSourceToggleWrapper>
             </>
           ),

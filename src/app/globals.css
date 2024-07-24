@@ -141,6 +141,9 @@
   li {
     @apply px-10 text-lg;
   }
+  table {
+    @apply w-full m-5;
+  }
 }
 
 .yarl__container, .yarl__thumbnails_container {

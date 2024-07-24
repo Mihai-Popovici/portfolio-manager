@@ -4,6 +4,7 @@ import { serialize } from 'next-mdx-remote/serialize'
 import { useEffect, useState } from 'react';
 import remarkDirective from 'remark-directive';
 import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
 import { visit} from 'unist-util-visit';
 import { MDXProvider } from '@mdx-js/react';
 import ImgComp from './ImgComp';
@@ -58,6 +59,7 @@ export default function RenderProject({project}:{project:any}){
       mdxOptions:{
         remarkPlugins:[
           remarkParse,
+          remarkGfm,
           remarkDirective,
           imgCompDirective,
           imgGalleryDirective
