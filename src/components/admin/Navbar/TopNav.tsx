@@ -3,7 +3,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import Link from "next/link";
 import { icons } from 'lucide-react';
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, findBestHref } from "@/lib/utils";
 import { SheetClose } from "@/components/ui/sheet";
 
 type Icon = keyof typeof icons;
@@ -51,6 +51,7 @@ export default function TopNav({showLabels=false,closeSheet=false}:Props){
       icon:'Tags'
     }
   ]
+  const hrefs = NavRoutes.map((route)=>route.href);
 
   if (closeSheet){
     return (
@@ -63,7 +64,7 @@ export default function TopNav({showLabels=false,closeSheet=false}:Props){
             cn(
               "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
                 showLabels && "w-[80%] px-2 gap-4 justify-start",
-                pathname === href && 'text-background bg-foreground hover:text-background'
+                findBestHref(hrefs, pathname) === href && 'text-background bg-foreground hover:text-background'
               )}>
             <Icon name={icon}></Icon>
             <span className={cn("sr-only")}>{label}</span>
@@ -86,7 +87,7 @@ export default function TopNav({showLabels=false,closeSheet=false}:Props){
                     cn(
                       "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
                       showLabels && "w-[80%] px-2 gap-4 justify-start",
-                      pathname === href && 'text-background bg-foreground hover:text-background'
+                      findBestHref(hrefs, pathname) === href && 'text-background bg-foreground hover:text-background'
                     )}
 
                 >
