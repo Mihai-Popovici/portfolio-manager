@@ -21,11 +21,11 @@ export function findBestHref(hrefs:string[], pathname:string) {
     pathname: '',
   }
   hrefs.forEach((href)=>{
-    let lenght = href.length;
+    let length = href.length;
     let slice = pathname.slice(0, href.length);
-    if (slice === href && lenght > bestMatch.length){
+    if (slice === href && length > bestMatch.length){
       bestMatch = {
-        length: lenght,
+        length: length,
         pathname: slice
       }
     }
