@@ -17,13 +17,15 @@ export default async function Project({ params }: { params: { slug: string } }){
     redirect('/');
   }
   return (
-  <div className="p-5 w-full">
-      <Button>
-        <a href="/" className="flex gap-2 items-center">
-          <ArrowLeft/>Go Back
-        </a>
-      </Button>
-      <RenderProject project={project}/>
+  <div className="w-full flex justify-center">    
+    <div className="p-5 w-[90vw]">
+        <Button variant="outline" className="rounded-3xl">
+          <a href="/" className="flex gap-2 items-center">
+            <ArrowLeft/>Go Back
+          </a>
+        </Button>
+        <RenderProject project={project}/>
+    </div>
   </div>
   );
 }
