@@ -163,3 +163,16 @@
 .yarl__thumbnails_bottom .yarl__thumbnails_vignette, .yarl__thumbnails_top .yarl__thumbnails_vignette {
   background: transparent !important;
 }
+.ͼo {
+  color: inherit;
+  background-color: inherit;
+}
+
+.ͼo .cm-activeLineGutter, .ͼ2 .cm-activeLineGutter {
+  background-color: hsl(var(--background));
+}
+
+._toolbarRoot_yms4a_160 {
+  z-index: 100!important;
+  background-color: hsl(var(--background)) !important;
+}

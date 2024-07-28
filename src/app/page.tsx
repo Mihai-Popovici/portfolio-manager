@@ -14,7 +14,7 @@ export default async function Home() {
         <div className="absolute z-20 bottom-0 w-full bg-transparent">
           <p className="w-full max-w-none text-white hidden md:flex justify-end gap-2 text-xl p-5 pr-10">SCROLL <ArrowDown className="animate-bounce"/></p>
         </div>
-        <video className="max-w-none absolute left-1/2 -translate-x-1/2 w-full h-full object-cover" muted autoPlay loop>
+        <video className="max-w-none absolute left-1/2 -translate-x-1/2 w-full h-full object-cover" muted autoPlay loop disablePictureInPicture>
           <source src="https://portfolio-manager.s3.tebi.io/videoplayback.mp4"></source>
         </video>
         <div className="absolute w-full left-0 bottom-0 from-black to-black/0 bg-gradient-to-t italic pt-52 pl-4 pr-16">
