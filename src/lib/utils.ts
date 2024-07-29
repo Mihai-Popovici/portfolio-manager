@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { type ClassValue, clsx } from "clsx"
 import { randomUUID } from "crypto";
 import { twMerge } from "tailwind-merge"
@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export async function uploadFile(file:File){
   const arrayBuffer = await file.arrayBuffer();
 
-  const fileName = randomUUID()+file.name;
+  const fileName = randomUUID()+'_'+file.name;
   const fileData = Buffer.from(arrayBuffer);
 
   const credentials = {
@@ -24,7 +24,7 @@ export async function uploadFile(file:File){
       credentials: credentials,
       region: process.env.BUCKET_REGION
   }as any);
-  const uploadData = await s3Client.send(
+  await s3Client.send(
     new PutObjectCommand({
             Bucket: process.env.BUCKET_NAME,
             ACL:'public-read',
@@ -33,6 +33,46 @@ export async function uploadFile(file:File){
     })
   );
   return `https://${process.env.BUCKET_NAME}.s3.tebi.io/${fileName}`;
+}
+
+export async function listFiles(){
+  const credentials = {
+    accessKeyId: process.env.BUCKET_ACCESS_KEY,
+    secretAccessKey: process.env.BUCKET_SECRET
+  };
+
+  const s3Client = new S3Client({
+    endpoint: process.env.BUCKET_ENDPOINT,
+    credentials: credentials,
+    region: process.env.BUCKET_REGION
+  }as any);
+
+  const data = await s3Client.send(
+    new ListObjectsCommand({
+      Bucket: process.env.BUCKET_NAME
+    })
+  )
+  return data
+}
+
+export async function deleteFile(filename:string){
+  const credentials = {
+    accessKeyId: process.env.BUCKET_ACCESS_KEY,
+    secretAccessKey: process.env.BUCKET_SECRET
+  };
+
+  const s3Client = new S3Client({
+    endpoint: process.env.BUCKET_ENDPOINT,
+    credentials: credentials,
+    region: process.env.BUCKET_REGION
+  }as any);
+
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: process.env.BUCKET_NAME,
+      Key: filename
+    })
+  )
 }
 
 export function readImageFile(file:File, cb:(data:string | ArrayBuffer | null)=>void){

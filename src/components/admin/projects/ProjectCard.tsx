@@ -12,10 +12,10 @@ type Props = {
 
 export default function ProjectCard({project}:Props){
   return (
-    <form action={()=>redirect('/admin/projects/'+project.slug)}>
-      <button type="submit" className="text-start">
+    <form className="h-full" action={()=>redirect('/admin/projects/'+project.slug)}>
+      <button type="submit" className="text-start h-full">
         <Card
-        className="overflow-hidden cursor-pointer"
+        className="overflow-hidden cursor-pointer h-full"
         >
           <CardHeader>
             <CardTitle className="line-clamp-1">{project.title}</CardTitle>

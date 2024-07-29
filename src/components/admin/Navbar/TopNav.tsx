@@ -45,6 +45,12 @@ export default function TopNav({showLabels=false,closeSheet=false}:Props){
       icon:'NotebookPen'
     },
     {
+      id:'files',
+      href:'/admin/files',
+      label:'Files',
+      icon:'File'
+    },
+    {
       id:'tags',
       href:'/admin/tags',
       label:'Tags',

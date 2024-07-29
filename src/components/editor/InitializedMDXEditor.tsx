@@ -43,6 +43,8 @@ import ImgGallery from '../home/ImgGallery';
 import { Photo } from 'react-photo-album';
 import { getMeta } from '@/lib/utils';
 import { Input } from '../ui/input';
+import SelectOne from '../admin/File/SelectOne';
+import SelectMany from '../admin/File/SelectMany';
 
 // Only import this to the next file
 export default function InitializedMDXEditor({
@@ -94,8 +96,8 @@ export default function InitializedMDXEditor({
   const ImageComparatorButton = () => {
     // grab the insertDirective action (a.k.a. publisher) from the
     // state management system of the directivesPlugin
-    const [file1, setFile1] = useState<null | File>(null);
-    const [file2, setFile2] = useState<null | File>(null);
+    const [file1, setFile1] = useState<null | string>(null);
+    const [file2, setFile2] = useState<null | string>(null);
 
     const insertDirective = usePublisher(insertDirective$);
 
@@ -108,20 +110,8 @@ export default function InitializedMDXEditor({
       if(!file1 || !file2){
         return;
       }
-      let formData = new FormData();
-      formData.append("file", file1);
-      const res1 = await fetch('/api/upload', {
-        method:'POST',
-        body: formData
-      })
-      const url1 = await res1.json();
-      formData = new FormData();
-      formData.append("file", file2);
-      const res2 = await fetch('/api/upload', {
-        method:'POST',
-        body: formData
-      })
-      const url2 = await res2.json();
+      const url1 = `https://portfolio-manager.s3.tebi.io/${file1}`;
+      const url2 = `https://portfolio-manager.s3.tebi.io/${file2}`;
 
       insertDirective({
         name: 'imgComp',
@@ -151,24 +141,8 @@ export default function InitializedMDXEditor({
                 Add 2 images you want to compare
               </AlertDialogDescription>
             </AlertDialogHeader>
-              <Input
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setFile1(e.target.files[0]);
-                  }
-                }}
-                type="file"
-                accept="image/jpeg,image/png"
-              />
-              <Input
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setFile2(e.target.files[0]);
-                  }
-                }}
-                type="file"
-                accept="image/jpeg,image/png"
-              />
+              <SelectOne onChange={(filename)=>setFile1(filename)}/>
+              <SelectOne onChange={(filename)=>setFile2(filename)}/>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={handleCancel}>
                 Cancel
@@ -191,24 +165,16 @@ export default function InitializedMDXEditor({
     function handleCancel() {
       
     }
-    async function handleAddImg(img:File){
-      setUploading(true);
-      if(!img){
-        return;
-      }
-      let formData = new FormData();
-      formData.append("file", img);
-      const res = await fetch('/api/upload', {
-        method:'POST',
-        body: formData
+    async function handleAddImgs(filenames:string[]){
+      setPhotos([]);
+      filenames.forEach((filename)=>{
+        const url = `https://portfolio-manager.s3.tebi.io/${filename}`;
+        getMeta(url, (err, img) => {
+          const width = img.naturalWidth;
+          const height = img.naturalHeight;
+          setPhotos((photos:Photo[])=>[...photos, {src:url, width, height}]);
+        });
       })
-      const url = await res.json();
-      getMeta(url, (err, img) => {
-        const width = img.naturalWidth;
-        const height = img.naturalHeight;
-        setPhotos((photos:Photo[])=>[...photos, {src:url, width, height}]);
-        setUploading(false);
-      });
     }
     function handleAdd() {
       insertDirective({
@@ -237,20 +203,11 @@ export default function InitializedMDXEditor({
                 Add images you want to add to the gallery
               </AlertDialogDescription>
             </AlertDialogHeader>
-              <Input
-                disabled={uploading}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    handleAddImg(e.target.files[0]);
-                  }
-                }}
-                type="file"
-                accept="image/jpeg,image/png"
-              />
+            <SelectMany onChange={(filenames)=>{handleAddImgs(filenames)}}/>
               <div className='flex flex-wrap gap-2 w-full h-fit'>
                 {photos.map((photo)=>(
                   // eslint-disable-next-line
-                  <img key={photo.src.split('/').reverse()[0]} width={80} height={80} src={photo.src} alt=''/> 
+                  <img className='object-cover' key={photo.key} width={80} height={80} src={photo.src} alt=''/> 
                 ))}
               </div>
             <AlertDialogFooter>
@@ -289,7 +246,7 @@ export default function InitializedMDXEditor({
           imageUploadHandler: async (value) => {
             let formData = new FormData();
             formData.append("file", value);
-            const upload = await fetch('/api/upload', {
+            const upload = await fetch('/api/files/upload', {
               method:'POST',
               body: formData
             });

@@ -54,19 +54,12 @@ export async function updateProject(formData:FormData){
   // const title = await uniqTitle(formData.get("title") as string);
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
-  const thumbnail = formData.get("thumbnail") as File;
-
-  if (thumbnail){
-    let thumbnailUrl = await uploadFile(thumbnail)
-    await db.update(UsersProjects).set({
-      thumbnailUrl
-    }).where(eq(UsersProjects.id, id)).returning();
-  }
-
+  const thumbnailUrl = formData.get("thumbnail") as string;
   await db.update(UsersProjects).set({
     title,
     slug:toSlug(title),
     description,
+    thumbnailUrl,
     content
   }).where(eq(UsersProjects.id, id)).returning();
 

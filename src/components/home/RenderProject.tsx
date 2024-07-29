@@ -14,7 +14,6 @@ function imgCompDirective() {
   return (tree:any) => {
     visit(tree, 'leafDirective', (node) => {
       if (node.name !== 'imgComp') return;
-      console.log(node);
       const data = node.data || (node.data = {});
       const hast = {
         type: 'element',
@@ -32,7 +31,6 @@ function imgGalleryDirective() {
   return (tree:any) => {
     visit(tree, 'leafDirective', (node) => {
       if (node.name !== 'imgGallery') return;
-      console.log(node);
       const data = node.data || (node.data = {});
       const hast = {
         type: 'element',

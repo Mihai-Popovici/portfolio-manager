@@ -18,7 +18,5 @@ export async function check() {
       }
     })
     const res = await calendar.calendarList.list({})
-    console.log(res.data);
   }
-  console.log("[CHECK] No User");
 }

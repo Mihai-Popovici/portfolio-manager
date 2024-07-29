@@ -5,6 +5,18 @@
 @import url("yet-another-react-lightbox/styles.css");
 @import url("yet-another-react-lightbox/plugins/thumbnails.css");
 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+ /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+}
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -175,4 +187,8 @@
 ._toolbarRoot_yms4a_160 {
   z-index: 100!important;
   background-color: hsl(var(--background)) !important;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  width: 0;
 }
