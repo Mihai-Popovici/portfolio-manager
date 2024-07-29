@@ -88,7 +88,14 @@ export default function SelectOne({onChange}:Props){
           {
             files?.map((fileItem:any)=>(
               <div key={fileItem.key} onClick={()=>setFile(fileItem.key)} className={cn(fileItem.key === file && 'border border-red-600')}>
-                <Image className="w-32 object-cover" src={fileItem.url} alt="Image" width={128} height={128}/>
+                {
+                  fileItem.key.split('.')[1] === 'mp4' ?
+                  <video className="w-32 object-cover" width={128} height={128} muted autoPlay loop disablePictureInPicture>
+                    <source src={fileItem.url} />
+                  </video>
+                  :
+                  <Image className="w-32 object-cover" src={fileItem.url} alt="Image" width={128} height={128}/>
+                }
               </div>
             ))
           }

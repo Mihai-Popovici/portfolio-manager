@@ -32,12 +32,12 @@ export default function TopNav({showLabels=false,closeSheet=false}:Props){
     label:string,
     icon:Icon
   }[] = [
-    {
-      id:'dashboard',
-      href:'/admin',
-      label:'Dashboard',
-      icon:'LayoutDashboard'
-    },
+    // {
+    //   id:'dashboard',
+    //   href:'/admin',
+    //   label:'Dashboard',
+    //   icon:'LayoutDashboard'
+    // },
     {
       id:'projects',
       href:'/admin/projects',
@@ -50,11 +50,17 @@ export default function TopNav({showLabels=false,closeSheet=false}:Props){
       label:'Files',
       icon:'File'
     },
+    // {
+    //   id:'tags',
+    //   href:'/admin/tags',
+    //   label:'Tags',
+    //   icon:'Tags'
+    // },
     {
-      id:'tags',
-      href:'/admin/tags',
-      label:'Tags',
-      icon:'Tags'
+      id:'settings',
+      href:'/admin/settings',
+      label:'Settings',
+      icon:'Settings'
     }
   ]
   const hrefs = NavRoutes.map((route)=>route.href);

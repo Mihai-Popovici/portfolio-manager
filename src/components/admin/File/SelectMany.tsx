@@ -95,7 +95,14 @@ export default function SelectMany({onChange}:Props){
           {
             filesPreview?.map((fileItem:any)=>(
               <div key={fileItem.key} onClick={()=>selectFile(fileItem.key)} className={cn(files.includes(fileItem.key) && 'border border-red-600')}>
-                <Image className="w-32 object-cover" src={fileItem.url} alt="Image" width={128} height={128}/>
+                 {
+                  fileItem.key.split('.')[1] === 'mp4' ?
+                  <video className="w-32 object-cover" width={128} height={128} muted autoPlay loop disablePictureInPicture>
+                    <source src={fileItem.url} />
+                  </video>
+                  :
+                  <Image className="w-32 object-cover" src={fileItem.url} alt="Image" width={128} height={128}/>
+                }
               </div>
             ))
           }
