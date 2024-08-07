@@ -63,7 +63,7 @@ export async function updateProject(formData:FormData){
     content
   }).where(eq(UsersProjects.id, id)).returning();
 
-  redirect('/admin/projects');
+  redirect('/admin/projects/'+toSlug(title));
 }
 
 export async function deleteProject(id:number){
