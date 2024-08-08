@@ -94,7 +94,7 @@ export default function SelectOne({onChange}:Props){
                     <source src={fileItem.url} />
                   </video>
                   :
-                  <Image className="w-32 object-cover" src={fileItem.url} alt="Image" width={128} height={128}/>
+                  <img className="w-32 object-cover" src={fileItem.url} alt="Image" width={128} height={128}/>
                 }
               </div>
             ))
